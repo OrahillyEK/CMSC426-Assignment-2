@@ -10,6 +10,11 @@ products = {
     4: {"id": 4, "title": "Apple", "price": 0.50, "stock": 24},
 }
 
+#this endpoint is just here to give render something to jump to
+@app.route('', methods=['GET'])
+def oops():
+    return jsonify({"message": "Well, here you are!"})
+
 #endpoint 1 retrieves a list of all products with names, prices, and stock.
 @app.route('/products', methods=['GET'])
 def get_product_info():
