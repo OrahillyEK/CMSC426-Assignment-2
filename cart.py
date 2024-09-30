@@ -45,7 +45,7 @@ def add_product_to_cart(user_id, product_id):
     else: 
         usercarts[user_id][product_id] = quantity   #adds new product quantity
 
-    decrement_response = requests.post(f"{product_service_URL}/add_to_cart{product_id}", json = {"quantity" : quantity})
+    decrement_response = requests.post(f"{product_service_URL}/add_to_cart/{product_id}", json = {"quantity" : quantity})
 
     if decrement_response.status_code != 200: #in case the decrement doesn't work
         return jsonify({"message": "Failure to decrease stock"}), 500
@@ -55,8 +55,6 @@ def add_product_to_cart(user_id, product_id):
 
 
 #removes an item from the user's cart and adds it back to the stock of the product service
-########FUTURE ELYSE START HERE
-
 @app.route('/cart/<user_id>/remove/<int:product_id>', methods=['POST'])
 def remove_product_from_cart(user_id, product_id):
     # Check if the user has a cart
@@ -64,19 +62,24 @@ def remove_product_from_cart(user_id, product_id):
         return jsonify({"error": "Product not found in cart"}), 404
 
     # Get the quantity of the product being removed
-    quantity_to_remove = usercarts[user_id][product_id]
+    data = request.get_json()
+    remove_quantity = data.get('quantity')
 
+    current_quantity = usercarts[user_id][product_id]
+
+    if remove_quantity > current_quantity:
+        return jsonify({"error": "Not enough in cart"}), 400
+    
     # Remove the product from the user's cart
-    del usercarts[user_id][product_id]
+    usercarts[user_id][product_id] -= remove_quantity
 
     # Add the stock back to the product
-    decrement_response = requests.post(f"{product_service_URL}/add_stock/{product_id}", json={"quantity": quantity_to_remove})
+    decrement_response = requests.post(f"{product_service_URL}/add_stock/{product_id}", json={"quantity": remove_quantity})
 
     if decrement_response.status_code != 200:  # If stock addition fails
         return jsonify({"message": "Failure to increase stock"}), 500
 
     return jsonify({"message": "Product removed from cart", "cart": usercarts[user_id]}), 200
-
 
 
 
