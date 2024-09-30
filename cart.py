@@ -1,9 +1,13 @@
 from flask import Flask, jsonify, request
-import requests
+import requests, os
 
 app = Flask(__name__)
 
 product_service_URL = 'http://127.0.0.1:5000/products'
+
+@app.route('/')
+def oops():
+    return "Hey! You made it!"
 
 #initialize cart contents dictionary
 usercarts = {}
@@ -84,5 +88,5 @@ def remove_product_from_cart(user_id, product_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    app.run(port=5001)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host='0.0.0.0', port=port)
