@@ -3,10 +3,6 @@ import os
 
 app= Flask(__name__)
 
-#this endpoint is just somewhere for Render to land
-@app.route('/')
-def oops():
-    return "So glad you're here!"
 
 #Filler products available
 products = {
@@ -19,7 +15,7 @@ products = {
 #this endpoint is just here to give render something to jump to
 @app.route('/', methods=['GET'])
 def oops():
-    return jsonify({"message": "Well, here you are!"})
+    return "So glad you're here!"
 
 #endpoint 1 retrieves a list of all products with names, prices, and stock.
 @app.route('/products', methods=['GET'])
