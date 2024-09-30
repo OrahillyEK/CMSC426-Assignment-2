@@ -1,6 +1,12 @@
 from flask import Flask, jsonify, request
+import os
 
 app= Flask(__name__)
+
+#this endpoint is just somewhere for Render to land
+@app.route('/')
+def oops():
+    return "So glad you're here!"
 
 #Filler products available
 products = {
@@ -78,6 +84,7 @@ def add_stock(product_id):
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0.', port=port)
 
 
